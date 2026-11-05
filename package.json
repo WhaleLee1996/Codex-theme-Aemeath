@@ -1,0 +1,28 @@
+{
+  "name": "codex-theme-aemeath",
+  "version": "0.1.11",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "check": "node scripts/check.mjs",
+    "stage": "python -B scripts/stage_runtime.py",
+    "verify-stage": "python -B scripts/verify_stage.py",
+    "doctor": "node scripts/doctor.mjs",
+    "setup": "python -B scripts/setup.py",
+    "test:python": "python -B -m unittest discover -s tests -p test_setup.py"
+  },
+  "devDependencies": {
+    "jsdom": "26.1.0"
+  },
+  "description": "Aemeath-inspired themes, glass panels and folder wallpapers for Codex on Windows.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WhaleLee1996/Codex-theme-Aemeath.git"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

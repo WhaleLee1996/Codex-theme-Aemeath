@@ -1,0 +1,10 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {resolveRuntime} from './launch-plan.mjs';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const read=name=>{try{return JSON.parse(fs.readFileSync(path.join(root,name),'utf8'));}catch{return null;}};
+const current=read('runtime/current.json'),settings=read('data/settings.json'),stage=read('diagnostics/staging-verification.json'),launch=read('diagnostics/last-launch.json');
+const report={recordedAt:new Date().toISOString(),workspace:root,themeVersion:read('package.json').version,stagedVersion:current?.version??null,executableExists:current?fs.existsSync(path.join(resolveRuntime(root,current),'ChatGPT.exe')):false,configuredProfileMode:read('data/launch-profile.json')?.defaultMode??'isolated',configSchema:settings?.schemaVersion??null,staging:stage,verification:read('diagnostics/runtime-verification.json'),lastLaunch:launch,nativeStartupObserved:launch?.state==='running-after-startup'&&launch?.buildManifestSha256===stage?.buildManifestSha256,nativeVisualAcceptance:false};
+fs.mkdirSync(path.join(root,'diagnostics'),{recursive:true});fs.writeFileSync(path.join(root,'diagnostics/doctor.json'),JSON.stringify(report,null,2)+'\n');
+console.log(JSON.stringify(report,null,2));

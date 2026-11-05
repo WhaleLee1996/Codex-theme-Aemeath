@@ -1,0 +1,31 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import crypto from 'node:crypto';
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const themeVersion = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8')).version;
+const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
+const reference = JSON.parse(fs.readFileSync(path.join(root, 'src/reference.json'), 'utf8'));
+const themes = JSON.parse(fs.readFileSync(path.join(root, 'src/themes.json'), 'utf8'));
+for (const [id, theme] of Object.entries(themes)) {
+  if (!/^[a-z][a-z0-9-]*$/.test(id) || ['constructor','prototype'].includes(id) || !theme.name || !['light','dark'].includes(theme.nativeScheme) || typeof theme.tokens?.['sidebar-bg'] !== 'string') throw new Error('Invalid theme registration: '+id);
+  const requiredTokens=[...Object.keys(reference.themes.rose.tokens),'code-bg',...['comment','keyword','literal','string','variable','attribute','name','error'].map(name=>'syntax-'+name)];
+  for (const key of requiredTokens) if (typeof theme.tokens?.[key] !== 'string') throw new Error('Missing theme token: '+id+'.'+key);
+  for (const key of reference.themeSettingKeys) if (theme.defaults?.[key] === undefined) throw new Error('Missing theme default: '+id+'.'+key);
+}
+reference.themes = themes;
+const out = path.join(root, 'dist');
+fs.mkdirSync(out, {recursive:true});
+const css = fs.readFileSync(path.join(root,'src/ui-base.css'),'utf8');
+const icon = fs.readFileSync(path.join(root,'assets/aemeath.webp'));
+const template = fs.readFileSync(path.join(root,'src/ui-template.html'),'utf8').trim().replace('{{COMPANION_IMAGE}}','data:image/webp;base64,'+icon.toString('base64'));
+if (template.includes('{{COMPANION_IMAGE}}') || template.split('data:image').length !== 2) throw new Error('Expected exactly one bundled companion icon.');
+const designInputsSha256 = hash(Buffer.from(css + JSON.stringify(reference) + template));
+fs.writeFileSync(path.join(out, 'reference.mjs'), `export const reference=${JSON.stringify(reference)};\nexport const template=${JSON.stringify(template.replace('底块不透明度','卡片与输入框不透明度'))};\n`);
+fs.writeFileSync(path.join(out, 'ui.css'), css + '\n' + fs.readFileSync(path.join(root, 'src/ui.css'), 'utf8'));
+for (const name of ['core.mjs','motion.mjs','native.mjs','ui.mjs','runtime.mjs','wallpaper-player.mjs','native.css','entry.css','host-storage.cjs','host-main.cjs','host-backgrounds.cjs','preload-extension.cjs']) fs.copyFileSync(path.join(root, 'src', name), path.join(out, name));
+const compatibility = JSON.parse(fs.readFileSync(path.join(root, 'adapters/26.1027.30824.json'), 'utf8'));
+fs.writeFileSync(path.join(out,'compatibility.mjs'), `export const compatibility=${JSON.stringify(compatibility)};\n`);
+const files = fs.readdirSync(out).filter(n => n !== 'build-manifest.json').map(name => ({name,sha256:hash(fs.readFileSync(path.join(out,name))),bytes:fs.statSync(path.join(out,name)).size}));
+fs.writeFileSync(path.join(out,'build-manifest.json'),JSON.stringify({themeVersion,themeIds:Object.keys(themes),designInputsSha256,files},null,2)+'\n');
+console.log(`Built ${files.length} files; public design inputs ${designInputsSha256.slice(0,12)}.`);

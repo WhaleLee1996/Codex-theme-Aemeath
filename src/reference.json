@@ -1,0 +1,181 @@
+{
+  "sourceStartingState": {
+    "schemaVersion": 3,
+    "theme": "plum",
+    "current": 0,
+    "background": 0,
+    "sidebar": true,
+    "settings": false,
+    "duration": 30,
+    "dim": 12,
+    "opacity": 72,
+    "cardBlur": 4,
+    "sidebarBlur": 0,
+    "haloBlur": 7,
+    "haloWidth": 15,
+    "glow": 0,
+    "glowMode": "breathe",
+    "breathPeriod": 6,
+    "breathPeak": 100,
+    "order": "sequence",
+    "playing": false,
+    "density": "airy",
+    "welcomeWidth": 760,
+    "themeAdjustments": {
+      "rose": {
+        "opacity": 30,
+        "cardBlur": 0,
+        "glow": 12,
+        "glowMode": "breathe",
+        "breathPeriod": 6,
+        "breathPeak": 100
+      },
+      "plum": {
+        "opacity": 72,
+        "cardBlur": 4,
+        "glow": 0,
+        "glowMode": "breathe",
+        "breathPeriod": 6,
+        "breathPeak": 100
+      }
+    }
+  },
+  "themes": {
+    "rose": {
+      "name": "浅粉",
+      "description": "浅粉底 · 深色文字",
+      "swatch": "#f4d4e6",
+      "defaults": {
+        "opacity": 30,
+        "cardBlur": 0,
+        "glow": 12,
+        "glowMode": "breathe",
+        "breathPeriod": 6,
+        "breathPeak": 100
+      },
+      "tokens": {
+        "ink": "#422b40",
+        "muted": "#654a60",
+        "pink": "#e597bc",
+        "surface": "251,222,237",
+        "line": "#ffe8f3a6",
+        "highlight": "#fff5fb66",
+        "accent": "#97426f",
+        "soft-accent": "#bd77a0",
+        "chip-bg": "#f9e4ef91",
+        "chip-border": "#ba7e9e66",
+        "chip-fg": "#914467",
+        "panel": "#fff1f8",
+        "panel-border": "#e3afcd",
+        "panel-title": "#5c3351",
+        "hover": "#fff7fc66",
+        "active": "#eed3e4",
+        "composer-border": "#f8b8db",
+        "placeholder": "#785c72",
+        "tab-track": "#eedbe8",
+        "tab-active": "#fff6fb",
+        "number": "#9f477b",
+        "range": "#bd739e",
+        "select-bg": "#fff8fc",
+        "select-border": "#d3aec5",
+        "note": "#89627b",
+        "focus": "#ad4b86"
+      }
+    },
+    "plum": {
+      "name": "深粉紫",
+      "description": "粉紫底 · 浅色文字",
+      "swatch": "#49304e",
+      "defaults": {
+        "opacity": 72,
+        "cardBlur": 0,
+        "glow": 12,
+        "glowMode": "breathe",
+        "breathPeriod": 6,
+        "breathPeak": 100
+      },
+      "tokens": {
+        "ink": "#fff1f8",
+        "muted": "#e2bfd5",
+        "pink": "#f0a4cd",
+        "surface": "58,36,65",
+        "line": "#e7acd45e",
+        "highlight": "#ffe2f31f",
+        "accent": "#ffc1e3",
+        "soft-accent": "#d59dbf",
+        "chip-bg": "#ae639e42",
+        "chip-border": "#f6b8da66",
+        "chip-fg": "#ffe0f0",
+        "panel": "#302034",
+        "panel-border": "#9f6a94",
+        "panel-title": "#fff0f8",
+        "hover": "#edafda20",
+        "active": "#69455f",
+        "composer-border": "#ecafd0",
+        "placeholder": "#d7b6cd",
+        "tab-track": "#231727",
+        "tab-active": "#64405e",
+        "number": "#fac0e0",
+        "range": "#dda1c6",
+        "select-bg": "#432d48",
+        "select-border": "#926681",
+        "note": "#d2acc5",
+        "focus": "#f4b2d7"
+      }
+    }
+  },
+  "limits": {
+    "duration": [
+      5,
+      120
+    ],
+    "dim": [
+      0,
+      60
+    ],
+    "opacity": [
+      10,
+      95
+    ],
+    "cardBlur": [
+      0,
+      24
+    ],
+    "sidebarBlur": [
+      0,
+      32
+    ],
+    "haloBlur": [
+      0,
+      24
+    ],
+    "haloWidth": [
+      8,
+      48
+    ],
+    "glow": [
+      0,
+      100
+    ],
+    "welcomeWidth": [
+      580,
+      880
+    ],
+    "breathPeriod": [
+      2,
+      12
+    ],
+    "breathPeak": [
+      0,
+      100
+    ]
+  },
+  "themeSettingKeys": [
+    "opacity",
+    "cardBlur",
+    "glow",
+    "glowMode",
+    "breathPeriod",
+    "breathPeak"
+  ]
+}

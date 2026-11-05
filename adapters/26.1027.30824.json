@@ -1,0 +1,88 @@
+{
+  "adapterVersion": "26.1027.30824-r7",
+  "packageVersion": "26.1027.30824",
+  "msixVersion": "26.1027.3384.0",
+  "nativeUiVerified": false,
+  "excludedWindowRoutes": [
+    "/avatar-overlay",
+    "/spotlight",
+    "/global-dictation",
+    "/hotkey-window"
+  ],
+  "services": {
+    "module": "./assets/app-shared-b9a49a97ca55.js",
+    "export": "Vct"
+  },
+  "cloud": {
+    "module": "./assets/app-initial-4267e52fe5b0.js",
+    "client": "_lr",
+    "initialize": "blr"
+  },
+  "sourceFiles": {
+    "package.json": "fd3f547a9d2efe631a446e9930d072e0ea9919f85eb35e7fa66483908fa43049",
+    ".vite/build/early-bootstrap.js": "95314a94cb594f682bdb7b1f52eead05413645f6cf1419b733b4e3c54df14947",
+    ".vite/build/preload.js": "aa8be920fd14a9b98eca16c91d97a55105b196698fda36d5063e966620a0c54a",
+    "webview/index.html": "3d31c659b98762af1e3f4c5c35f2e5bb5bb3242af2e27740acfaecb46583102e",
+    "webview/assets/app-shared-b9a49a97ca55.js": "f4b8ddb204fe43881fe4a625c09938e96aca597585583af1d86fc611c79d2e47",
+    "webview/assets/app-primary-998934e837fc.js": "084d7102a8eca9a49fc37e25d7b95c2c8052d3b5b2709e28867e266748d761a0",
+    "webview/assets/app-initial-4267e52fe5b0.js": "ba06de8c5418586b49ca7d639ea5ad2af531c1037454ec69b10b9ea11e00992e",
+    "webview/assets/b74e19ff7ff4.css": "add22f5a6ff93862827b6bba51ed6e4356708d8f99c2a6bdaca51993bc0df3ed",
+    "webview/assets/59ad52d5aa88.css": "a03f7cb0efbef3fc50b767db245d131c87bbc2a4d226307786473bc08cbf9b0e",
+    "webview/assets/writing-block-surface-22c017eb0f9c.js": "fd566a7c6e456d0bd349081207e4468cd97b782deeaa103d23ddf2d7df590ada",
+    "webview/assets/writing-block-theme-cd229b3979ac.js": "31dea0ba2a2e9e61ce07bd45081a828241a131f5d00f1e0cc2d2ef2949ff52fb",
+    "webview/assets/user-message-bubble-413e2f731e5a.js": "cae209cdc974e6e7ed708aecabc6a9f054ac298f9faf79e5900f946600cf0226",
+    "webview/assets/21d6bd89b8c7.css": "244589604b0d0fd9e04777c6d79c50f039e63182db72da9ae4cb64ecbcec148e",
+    "webview/assets/d754c8cd8b21.css": "8699442f05bb69248b0c6f7672e216b29ee5ac71c65fe8782672151b5461a55b",
+    "webview/assets/chatgpt-code-block-1cd5236a2dbc.js": "90199548145041af783110baca0d6e0f4bdfe16474d8426af6e44399c2c07118",
+    "webview/assets/chatgpt-code-block-editor-theme-7587d33e5cb3.js": "3d3ca3ac049e328d982f35f3ee6d938a1114ac09e80685968dbd700aefaf33e8",
+    "webview/assets/chatgpt-code-block-highlighting-2cd2edf4d7c3.js": "8b38b9c19aa6b7271633ac9393752b9b38047d658ddc20dfc5e56b42f60757cd",
+    "webview/assets/chatgpt-code-block-pierre-479e68900013.js": "4ba883b9b8565d23ff4c880b95b757deb58eddf98b66962f49ea3bef9c10ede7",
+    "webview/assets/document-card-8e80c80a8140.js": "fc1eeb46f108cf2bf5880090a97d9d919b1538015da71acabbe5487760b0f34b",
+    "webview/assets/chart-content-reference-44537e6623bd.js": "a9a5787507c82c772e4a71b252db872e203cbef8adeeb71b8b0720321f24a25a",
+    "webview/assets/visualization-theme-67f88c493e60.js": "2e1ff2aa6b42ac7aff2dd5a35c4444243290d8487c0adf1c2e0a4b85149850bc",
+    "webview/assets/mermaid-diagram-f193911b0262.js": "667bdbd63d9ffb9e4a48926f6c21abef77a1d58e1518f6a8106ee33c1ba510bc",
+    "webview/assets/generated-image-tile-da5c8248fddd.js": "63f381adab32daea023a95766e97b01075a747250ebb5276944f58453a73fd1c",
+    "webview/assets/mcp-app-host-styles-b3fb47a5d319.js": "3234e3d381951254c10645b3bf9e928c4ab2a91ce638664253e4efca2bb6993b",
+    "webview/assets/5257da4ba4ae.css": "6c0b62be9ea2b0268a114414a05365744206eab52b3c14b66ec6eceb063d23e0",
+    ".vite/build/early-bootstrap-491-e75c34fa1b2c0832.js": "db3fd1590ec3d3c621a85c2cf925785ea6d99df8bc4eaec8bc4b1e974758a8ab"
+  },
+  "observedSelectors": [
+    "main[data-app-shell-main-surface]",
+    "[data-feature=\"game-source\"].heading-xl",
+    "[data-codex-composer-root]",
+    "[data-composer-surface-variant]",
+    "[data-slate-sidebar-content]",
+    "[data-app-action-sidebar-thread-id]",
+    "[data-testid=\"home-icon\"]",
+    "[data-composer-navigation-target=\"workspace-project\"]",
+    "form[data-thread-find-composer]",
+    "[data-thread-user-message-navigation-content]",
+    "[data-composer-utility-rail]",
+    "[data-composer-rail]",
+    "._background_18hic_2[aria-hidden=\"true\"]",
+    "._MainContentTopFade_azz1c_2[aria-hidden=\"true\"]",
+    "._root_1q7e3_1[role=\"group\"]",
+    "[data-oai-writing-block-surface]",
+    "[data-user-message-bubble]",
+    "[data-radix-popper-content-wrapper]",
+    "[data-code-block]",
+    "._CodeBlockPlaceholder_xjxw3_2",
+    "[data-testid=\"chatgpt-chart-content-reference\"]",
+    "[data-chatgpt-mermaid-preview]",
+    "._MermaidBlock_xjxw3_2",
+    "[data-code-block-preview-pane]"
+  ],
+  "observedServices": [
+    "projectCatalog.readLocalProjects",
+    "projectCatalog.readRemoteProjects",
+    "projectCatalog.readSelection",
+    "threadProjectAssignments.readMemberships",
+    "localThreadCatalog.readPage",
+    "safeGet /gizmos/snorlax/sidebar",
+    "safeGet /gizmos/{gizmo_id}/conversations"
+  ],
+  "runtimeBinaries": {
+    "ChatGPT.exe": "d8b9c500c4dc0fa2fd5a8a3a5592cd637c2a9e625a191d8733a0b7aa8143b11b",
+    "chrome.dll": "f66d0d4e578dc848dd0666bfa80063ea21402cc6155270316491656f26c3839d"
+  }
+}

@@ -1,0 +1,36 @@
+<div id="aw-ui"><div class="aw-main" hidden><div class="aw-home"><span class="aw-project-status aw-sr-only" role="status"></span><div class="aw-projects" aria-label="固定快捷项目"></div><div class="aw-welcome-space"><section class="aw-welcome aw-glass" aria-label="欢迎卡片"><div class="aw-greeting">此夜，星海澈明！<span aria-hidden="true">✦</span></div><div class="aw-welcome-line"><span>今天，去</span><button type="button" class="aw-project-chip" data-action="project" aria-haspopup="menu"><span aria-hidden="true">♡</span><span class="aw-current-project">选择项目</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><span class="aw-welcome-end">做些什么有趣的事呢？</span></div></section></div></div></div><div class="aw-live-halo" hidden></div><div class="aw-live-glow" hidden aria-hidden="true"></div><span class="aw-live-star aw-live-star-one" hidden aria-hidden="true">✦</span><span class="aw-live-star aw-live-star-two" hidden aria-hidden="true">✧</span><aside class="aw-settings" aria-label="小爱主题设置" hidden>
+          <header><div><span class="aw-setting-eyebrow">AEMEATH</span><h2>小爱的星海</h2></div><button type="button" class="aw-icon cursor-interaction" data-action="close-settings" aria-label="关闭设置"><i data-lucide="x" aria-hidden="true"></i></button></header>
+          <div class="aw-setting-tabs" role="tablist" aria-label="主题设置分类"><button type="button" id="aw-theme-tab" class="cursor-interaction" role="tab" data-tab="theme" aria-controls="aw-theme-panel" aria-selected="true">主题</button><button type="button" id="aw-background-tab" class="cursor-interaction" role="tab" data-tab="background" aria-controls="aw-background-panel" aria-selected="false">背景</button><button type="button" id="aw-glass-tab" class="cursor-interaction" role="tab" data-tab="glass" aria-controls="aw-glass-panel" aria-selected="false">玻璃</button><button type="button" id="aw-glow-tab" class="cursor-interaction" role="tab" data-tab="glow" aria-controls="aw-glow-panel" aria-selected="false">星光</button></div>
+          <div class="aw-setting-panel" id="aw-theme-panel" data-panel="theme" role="tabpanel" aria-labelledby="aw-theme-tab">
+            <div class="aw-theme-options" aria-label="选择界面配色"></div>
+            <div class="aw-local-note">配色与背景分开选择。每种主题保留各自的透明度、卡片模糊与星光设置。</div>
+          </div>
+          <div class="aw-setting-panel" id="aw-background-panel" data-panel="background" role="tabpanel" aria-labelledby="aw-background-tab" hidden>
+            <div class="aw-background-source"><img class="aw-background-preview" alt="当前背景" hidden/><strong>背景文件夹</strong><span class="aw-folder-path"></span><span class="aw-folder-count"></span><div class="aw-settings-actions"><button type="button" class="aw-small-button" data-action="choose-folder">选择文件夹</button><button type="button" class="aw-small-button" data-action="open-folder">打开文件夹</button><button type="button" class="aw-small-button" data-action="refresh-backgrounds">刷新</button></div><p class="aw-local-note">播放此文件夹第一层的图片。增删图片后会自动更新。</p><p class="aw-folder-warning" role="status" hidden></p></div>
+            <div class="aw-wallpaper-controls"><button type="button" class="cursor-interaction" data-action="previous" aria-label="上一张背景">‹</button><span class="aw-wallpaper-name">星海</span><button type="button" class="cursor-interaction" data-action="next" aria-label="下一张背景">›</button><button type="button" class="cursor-interaction aw-play" data-action="play">播放轮播</button></div>
+            <label class="aw-range"><span>每张停留 <output data-output="duration">30 秒</output></span><input type="range" data-setting="duration" min="5" max="120" step="5" value="30"/></label>
+            <label class="aw-range"><span>背景压暗 <output data-output="dim">12%</output></span><input type="range" data-setting="dim" min="0" max="60" value="12"/></label>
+            <label class="aw-select">切换方式<select data-setting="order"><option value="sequence">顺序播放</option><option value="random">随机播放</option></select></label>
+          </div>
+          <div class="aw-setting-panel" id="aw-glass-panel" data-panel="glass" role="tabpanel" aria-labelledby="aw-glass-tab" hidden>
+            <label class="aw-range"><span>卡片与输入框不透明度 <output data-output="opacity">30%</output></span><input type="range" data-setting="opacity" min="10" max="95" value="30"/></label>
+            <label class="aw-range"><span>卡片与输入框模糊 <output data-output="cardBlur">0 px</output></span><input type="range" data-setting="cardBlur" min="0" max="24" value="0"/></label>
+            <label class="aw-range"><span>侧边栏背景模糊 <output data-output="sidebarBlur">18 px</output></span><input type="range" data-setting="sidebarBlur" min="0" max="32" value="18"/></label>
+            <label class="aw-range"><span>输入框外沿模糊 <output data-output="haloBlur">10 px</output></span><input type="range" data-setting="haloBlur" min="0" max="24" value="10"/></label>
+            <label class="aw-range"><span>外沿过渡范围 <output data-output="haloWidth">24 px</output></span><input type="range" data-setting="haloWidth" min="8" max="48" value="24"/></label>
+            <div class="aw-local-note">侧边栏模糊在展开侧边栏后可见。外沿模糊在输入框长高时出现；强度为 0 时，调整过渡范围不会产生模糊。</div>
+          </div>
+          <div class="aw-setting-panel" id="aw-glow-panel" data-panel="glow" role="tabpanel" aria-labelledby="aw-glow-tab" hidden>
+            <div class="aw-glow-modes" role="group" aria-label="星光模式"><button type="button" class="cursor-interaction" data-glow-mode="breathe" aria-pressed="true">呼吸</button><button type="button" class="cursor-interaction" data-glow-mode="manual" aria-pressed="false">固定亮度</button></div>
+            <div data-glow-controls="breathe">
+              <label class="aw-range"><span>呼吸周期 <output data-output="breathPeriod">6 秒</output></span><input type="range" data-setting="breathPeriod" min="2" max="12" step="0.5" value="6"/></label>
+              <label class="aw-range"><span>最高亮度 <output data-output="breathPeak">100%</output></span><input type="range" data-setting="breathPeak" min="0" max="100" value="100"/></label>
+              <div class="aw-local-note">从暗到亮，再慢慢回到暗处。切换到固定亮度即可停止呼吸。</div>
+            </div>
+            <div data-glow-controls="manual" hidden>
+              <label class="aw-range"><span>固定亮度 <output data-output="glow">0%</output></span><input type="range" data-setting="glow" min="0" max="100" value="0"/></label>
+              <div class="aw-local-note">保留你手动选择的亮度，切换呼吸不会覆盖它。</div>
+            </div>
+            <div class="aw-local-note aw-motion-note" role="status" hidden>系统已启用减少动态效果，当前使用固定亮度。</div>
+          </div>
+        </aside><button type="button" class="aw-companion cursor-interaction" data-action="settings" aria-label="小爱主题设置" data-tooltip="主题设置" data-tooltip-placement="left" aria-expanded="false"><img src="{{COMPANION_IMAGE}}" alt="小爱"/></button><div class="aw-toast" role="status" hidden></div></div>
