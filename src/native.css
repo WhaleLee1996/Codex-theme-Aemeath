@@ -2,6 +2,9 @@ html[data-aw-enabled] { background:transparent!important; }
 html[data-aw-enabled] [data-aw-clear] { background-color:transparent!important; background-image:none!important; }
 html[data-aw-enabled] [data-aw-main] { color:var(--aw-ink); }
 html[data-aw-enabled] [data-aw-native-backdrop] { display:none!important; }
+/* Keep the footer and its controls; remove only its native decorative paint. */
+html[data-aw-enabled] [data-aw-composer-footer]::before,
+html[data-aw-enabled] [data-aw-composer-footer]::after { content:none!important; background:none!important; }
 html[data-aw-enabled] [data-aw-page="conversation"] { background-color:rgba(var(--aw-surface),var(--aw-opacity))!important; color:var(--aw-ink); --color-text:var(--aw-ink); --color-text-primary:var(--aw-ink); --color-text-secondary:var(--aw-muted); }
 html[data-aw-enabled] [data-aw-page="conversation"] :is(.text-default,.text-primary) { color:var(--aw-ink)!important; }
 html[data-aw-enabled] [data-aw-user-message] { background:rgba(var(--aw-surface),clamp(.6,calc(var(--aw-opacity) + .1),.86))!important; color:var(--aw-ink)!important; --color-background-user-message:transparent; --color-text-user-message:var(--aw-ink); --color-text:var(--aw-ink); --color-text-primary:var(--aw-ink); --color-text-secondary:var(--aw-muted); box-shadow:inset 0 0 0 1px var(--aw-line); backdrop-filter:blur(var(--aw-card-blur)); }

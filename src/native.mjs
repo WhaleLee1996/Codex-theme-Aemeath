@@ -208,7 +208,10 @@ export class NativeDom {
       const contentRoot = sidePanel ?? composer.closest(this.selectors.mainContent) ?? main;
       const railScope = composer.closest(this.selectors.homeComposer) ?? composer;
       const rails = [...railScope.querySelectorAll(this.selectors.composerRail)].filter(e => this.active(e));
-      return {composer,surface,input,sidePanel,contentRoot,rails};
+      // Newer native footers paint a full-width fade using pseudo-elements.
+      // Bind only the version-pinned wrapper around an identified editor.
+      const footer = this.selectors.composerFooter ? composer.closest(this.selectors.composerFooter) : null;
+      return {composer,surface,input,sidePanel,contentRoot,rails,footer};
     }).filter(n => n.surface && n.input);
     const primaryCandidates = composers.filter(n => !n.sidePanel);
     const primary = primaryCandidates.length === 1 ? primaryCandidates[0] : null;
@@ -241,7 +244,7 @@ export class NativeDom {
   attach() {
     const nodes = this.find();
     const primaryChanged = nodes.main !== this.nodes.main || nodes.contentRoot !== this.nodes.contentRoot || nodes.hero !== this.nodes.hero || nodes.composer !== this.nodes.composer || nodes.dockRoot !== this.nodes.dockRoot || nodes.projectTrigger !== this.nodes.projectTrigger || nodes.isHome !== this.nodes.isHome;
-    const bindings = n => (n.composers ?? []).flatMap(c => [c.composer,c.surface,c.input,c.contentRoot,...c.rails]);
+    const bindings = n => (n.composers ?? []).flatMap(c => [c.composer,c.surface,c.input,c.contentRoot,c.footer,...c.rails]);
     const previous = bindings(this.nodes), current = bindings(nodes);
     if (primaryChanged) {this.resetProjectPicker(); this.homeJournal.restore();}
     if (primaryChanged || previous.length !== current.length || current.some((node,i) => node !== previous[i])) this.journal.restore();
@@ -257,6 +260,7 @@ export class NativeDom {
     }
     for (const chat of nodes.composers) {
       this.journal.attr(chat.surface, 'data-aw-composer', '');
+      if (chat.footer && nodes.main.contains(chat.footer)) this.journal.attr(chat.footer, 'data-aw-composer-footer', '');
       for (const rail of chat.rails) {
         this.journal.attr(rail, 'data-aw-composer-rail', '');
         const frame = rail.closest(this.selectors.composerRailFrame);
@@ -418,7 +422,7 @@ export class NativeDom {
   diagnose() {
     const n = this.nodes;
     const rect = e => {const r = e?.getBoundingClientRect(); return r ? {x: Math.round(r.x), y: Math.round(r.y), width: Math.round(r.width), height: Math.round(r.height)} : null;};
-    return {main: !!n.main, homepage: !!n.isHome, homeMode:n.homeMode ?? null, composer: !!n.composer, composerKind: n.composer?.tagName ?? null, surface: !!n.surface, editor: !!n.input, nativeProjectPicker: !!n.projectTrigger, sidebarCount: n.sidebar?.length ?? 0, recognizedComposers:n.composers?.length ?? 0, sideChatComposers:n.composers?.filter(c=>c.sidePanel).length ?? 0, composers:(n.composers ?? []).map(c=>({kind:c.sidePanel?'side-chat':'main',composerRect:rect(c.surface),editor:!!c.input,utilityRails:c.rails.length})), mainCandidates:this.doc.querySelectorAll(this.selectors.main).length, composerCandidates:this.doc.querySelectorAll(this.selectors.composer).length, mainRect: rect(n.main), composerRect: rect(n.surface), contentRect:this.contentBounds(), fullComposerRect:this.composerBounds(), dockOffset:n.dockRoot?.style.getPropertyValue('--aw-home-dock-y') ?? '', dockIncludesUtilityWrapper:!!n.dockRoot && n.dockRoot !== n.composer, decorativeLayers:n.main?.querySelectorAll('[data-aw-native-backdrop]').length ?? 0, utilityRails:n.rails?.length ?? 0};
+    return {main: !!n.main, homepage: !!n.isHome, homeMode:n.homeMode ?? null, composer: !!n.composer, composerKind: n.composer?.tagName ?? null, surface: !!n.surface, editor: !!n.input, nativeProjectPicker: !!n.projectTrigger, sidebarCount: n.sidebar?.length ?? 0, recognizedComposers:n.composers?.length ?? 0, sideChatComposers:n.composers?.filter(c=>c.sidePanel).length ?? 0, composers:(n.composers ?? []).map(c=>({kind:c.sidePanel?'side-chat':'main',composerRect:rect(c.surface),editor:!!c.input,utilityRails:c.rails.length})), mainCandidates:this.doc.querySelectorAll(this.selectors.main).length, composerCandidates:this.doc.querySelectorAll(this.selectors.composer).length, mainRect: rect(n.main), composerRect: rect(n.surface), contentRect:this.contentBounds(), fullComposerRect:this.composerBounds(), dockOffset:n.dockRoot?.style.getPropertyValue('--aw-home-dock-y') ?? '', dockIncludesUtilityWrapper:!!n.dockRoot && n.dockRoot !== n.composer, decorativeLayers:n.main?.querySelectorAll('[data-aw-native-backdrop]').length ?? 0, footerBackdrops:n.main?.querySelectorAll('[data-aw-composer-footer]').length ?? 0, utilityRails:n.rails?.length ?? 0};
   }
   dispose() { this.resetProjectPicker(); this.homeJournal.restore(); this.journal.restore(); }
 }

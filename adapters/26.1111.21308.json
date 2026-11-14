@@ -1,5 +1,5 @@
 {
-  "adapterVersion": "26.1111.21308-r1",
+  "adapterVersion": "26.1111.21308-r2",
   "packageVersion": "26.1111.21308",
   "msixVersion": "26.1111.2228.0",
   "nativeUiVerified": false,
@@ -39,7 +39,8 @@
     "codeSurface": "[data-code-block], .CodeBlockPlaceholder-rW0eah",
     "visualSurface": "[data-testid=\"chatgpt-chart-content-reference\"], [data-chatgpt-mermaid-preview], .MermaidBlock-zsG6ii, [data-code-block-preview-pane]",
     "mainContent": "[data-app-shell-focus-area=\"main\"]",
-    "sidePanel": "aside[data-app-shell-focus-area=\"right-panel\"]"
+    "sidePanel": "aside[data-app-shell-focus-area=\"right-panel\"]",
+    "composerFooter": ".footer-A8ZvKV:has(> [data-thread-scroll-footer])"
   },
   "sourceFiles": {
     "package.json": "e4e4200901af970bf9b5fca1bba1ffce8278027c5e11cf3956f97fac7c18819a",
@@ -86,7 +87,13 @@
     "webview/assets/async/2e662a5288e2.css": "4851d87f7854184487c24c276755bfe35f0e73189655dde69f4c000074ba469f",
     "webview/assets/async/e4c303ab7534.css": "fd5ee8abcec39b880a066fca03942d6c09d3c74fde456b7e1863d27619d04760",
     "webview/assets/async/6f3ae4a67c73.css": "fe56bb61ffb584a72eb1a83976511af92ecfff11b6dd356325540699f18c6861",
-    "webview/assets/async/603585.03979ff6df.js": "8d8897ac287c1ab1c63a7736d245cbbcd537a4e2591599acefd75800943b6a9b"
+    "webview/assets/async/603585.03979ff6df.js": "8d8897ac287c1ab1c63a7736d245cbbcd537a4e2591599acefd75800943b6a9b",
+    "webview/assets/async/20dca5934f5d.css": "a96bb21ef03cbd06c2102e9d3302f67a506058855e947022f58966920e4e7202",
+    "webview/assets/async/55a17141587c.css": "c178c5d2834853b0262f54eae072144fc3c9e88ee302257f0db73a7701d31376",
+    "webview/assets/async/59d93f9e7acb.css": "dc0c1e363876defa5ee14be46784ab882064f552b6349993ef99cdd978e7b2eb",
+    "webview/assets/async/8f26e793d206.css": "a99f9fc789790f102cb746e8d69c657b547139c75930f0d1cee6f8c4a17115fa",
+    "webview/assets/async/9b2e3f4cd74b.css": "ec7d7138e7b1f90b6c426069e61b29f9fe18c7b1870024c7a67ea8c329f177aa",
+    "webview/assets/async/fab18094c5da.css": "e15c8084c648e2e74667e1f541ad04a54ce2e8beab856df46d23e7748a68ed70"
   },
   "runtimeBinaries": {
     "ChatGPT.exe": "cf2ee1ce895df9ee158ee61830d9d0f805c77d9b212ad0e159ae605ae04260c6",
