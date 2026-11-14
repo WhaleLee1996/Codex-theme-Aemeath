@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+const legacyCompatibility=JSON.parse(fs.readFileSync(new URL('../adapters/26.1027.30824.json',import.meta.url)));
 import {startTheme as startNativeTheme} from '../dist/runtime.mjs';
 
 // jsdom has no image decoder or Blob URL registry. Native rendering is not
@@ -10,5 +12,5 @@ export async function startTheme(win,options) {
     set src(value){this.value=value;if(value)queueMicrotask(()=>{if(this.value===value)this.onload?.();});}
     get src(){return this.value;}
   };
-  return startNativeTheme(win,options);
+  return startNativeTheme(win,{compatibility:legacyCompatibility,...options});
 }

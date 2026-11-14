@@ -9,6 +9,8 @@
 #aw-ui .aw-project-card { pointer-events:auto; }
 #aw-ui .aw-thread-list { height:var(--aw-thread-height,140px); }
 #aw-ui .aw-welcome-space { flex:1; min-height:125px; height:auto; align-items:flex-end; padding-top:22px; padding-bottom:24px; }
+/* Work welcome follows the project cards; allow a smaller gap in short windows. */
+#aw-ui .aw-main[data-home-mode="work"] .aw-welcome-space { align-items:flex-start; padding-top:clamp(24px, 8vh, 2cm); }
 #aw-ui .aw-welcome { pointer-events:auto; }
 #aw-ui .aw-project-chip:disabled { cursor:default; opacity:.8; }
 #aw-ui .aw-project-heading { font-weight:600; }

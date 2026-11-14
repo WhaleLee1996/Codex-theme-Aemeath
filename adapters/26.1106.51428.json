@@ -1,0 +1,115 @@
+{
+  "adapterVersion": "26.1106.51428-r1",
+  "packageVersion": "26.1106.51428",
+  "msixVersion": "26.1106.6628.0",
+  "nativeUiVerified": false,
+  "excludedWindowRoutes": [
+    "/avatar-overlay",
+    "/spotlight",
+    "/global-dictation",
+    "/hotkey-window"
+  ],
+  "services": {
+    "moduleId": "GaA7",
+    "export": "appServices"
+  },
+  "cloud": {
+    "moduleId": "Ghh3",
+    "client": "Request"
+  },
+  "observedServices": [
+    "projectCatalog.readLocalProjects",
+    "projectCatalog.readRemoteProjects",
+    "projectCatalog.readSelection",
+    "threadProjectAssignments.readMemberships",
+    "localThreadCatalog.readPage",
+    "safeGet /gizmos/snorlax/sidebar",
+    "safeGet /gizmos/{gizmo_id}/conversations"
+  ],
+  "loader": {
+    "kind": "rspack",
+    "module": "./assets/348410.1a97dde15f.js",
+    "export": "__webpack_require__"
+  },
+  "selectors": {
+    "hero": "[data-feature=\"game-source\"], [style*=\"--vt-splash-screen-headline\"]",
+    "composer": "[data-codex-composer-root], [data-thread-find-composer]",
+    "modeToggle": ".root-HUUPVC[role=\"group\"]",
+    "chromeBackdrop": ".background-uNUrfY[aria-hidden=\"true\"], .MainContentTopFade-T6W4RS[aria-hidden=\"true\"]",
+    "codeSurface": "[data-code-block], .CodeBlockPlaceholder-rW0eah",
+    "visualSurface": "[data-testid=\"chatgpt-chart-content-reference\"], [data-chatgpt-mermaid-preview], .MermaidBlock-zsG6ii, [data-code-block-preview-pane]",
+    "mainContent": "[data-app-shell-focus-area=\"main\"]",
+    "sidePanel": "aside[data-app-shell-focus-area=\"right-panel\"]"
+  },
+  "sourceFiles": {
+    "package.json": "7ce67dba762f7e53e16b103e78b6187cc9dfa0077a36b78bd92656f864b9f1de",
+    ".vite/build/early-bootstrap.js": "65061a5b536de78484458d07ddb349d0d40fc4e94b85c616f31935302c9591f5",
+    ".vite/build/early-bootstrap-631-8a15b3cfc1548366.js": "6220f9e2c741a3a1b474a6635e7b9132313b09db81b333392b8d1e5b9fad5c9b",
+    ".vite/build/preload.js": "14019ac35aa29299657db742d649bbb792eed70dca7673b7c27275b250e02ed9",
+    "webview/index.html": "975ffae52e3dcca88face76cb45c21b252504d4a823fdbd0129113fdcba3b462",
+    "webview/assets/782259.7a3e865ee5.js": "5b9221f52d1eea38d1389b1e530c6067a4ca72d86632b4b19247ad6990e37c23",
+    "webview/assets/727403.da6b00f04b.js": "6ea73cd01f995eb8c543bcf50d120ff512d25c291948cb05acdfdadddc02d1f0",
+    "webview/assets/158624.0baba19172.js": "f6638b4beb2a6dda7885a02f98a34ff9eba8b2712c94128cece9ecf40f6a1f7e",
+    "webview/assets/348410.1a97dde15f.js": "2f366e7066e7dabb445e1e583917f57aa787d04e9c9dcfe684c9c7af47bb0b52",
+    "webview/assets/async/739301.37a39f26d6.js": "acc2174e4ed3d2068af26c1731f08e8978c853864aea9c0a917ae9d246885058",
+    "webview/assets/async/394447.49fa964b1a.js": "1a77b39599310d35502cf20d71ffc77926ced5da2915e03e578220de173404f8",
+    "webview/assets/async/307320.a9436a8f07.js": "1bb6b2757c054831625f2ade5c8c5e0ed2b441aa7c35b37dbad80a83d81dd836",
+    "webview/assets/async/244404.f80163303b.js": "60371e6a9b999245fb7932771fa7b4dde29bcdedee852961fde97eeac52d05bd",
+    "webview/assets/async/795644.e9e7c12373.js": "17c6574c7b2441a9122563f838a050f9338c56c457cd96701f3e94d41d587e33",
+    "webview/assets/async/815047.499d5f0e5b.js": "ee4d845a63f9b3b5f02659bc29ce71dd2de9fc502965bcf8312c21046d52822f",
+    "webview/assets/async/961657.80cc563d2f.js": "17ad8fecae35aff3dd82f4dd9089144dbad93f080d2292987d07358a2e67751c",
+    "webview/assets/async/3773.c2ba070f33.js": "186fe6d8c99ffb0a3f140226b8d00dad6ffb5d20fb4937e9674ae8cd3ac2a14f",
+    "webview/assets/async/233814.2671661356.js": "9fe04c61a3ca5bba878b8ed634b0a23c15e741e75186cea9ece26f53ed3cabbc",
+    "webview/assets/async/112855.af2e1ecfdc.js": "ff1b47ba359caae0508145086e75c9ca647c64ed919aa3c3dc24bbf744c918b0",
+    "webview/assets/async/355084.85faf52e49.js": "dcdbab4e9e77d48f10610c15b1585b32c021ac951c3d8429f96f21349da020fe",
+    "webview/assets/async/485738.f1600e23d1.js": "ec2f1af7ee4bc0141575e04f001133b5fbb1368d541680ad86d37eeb8bff032f",
+    "webview/assets/async/701376.c01f81a6d3.js": "104731c8c53f80e04946b0a57c31c7a6a093d8260038ad116179f93fe8b2e06e",
+    "webview/assets/async/793430.42cfa63a68.js": "adb4e2a9ed93b7a1a798ede6dead157596ee0232a8450001a05cd18909ea9dd0",
+    "webview/assets/async/885910.79b4f4977c.js": "1011c180e813ef95373b33f53ec234baa941d748dd1110f4de4538a42a550feb",
+    "webview/assets/async/23355.fb0dd2c798.js": "326e84870aa37719be8ce56ba60c4ea1d97700d9f3ed7386d97d5ba6bc0d286e",
+    "webview/assets/async/846754.8cc3edfb36.js": "8efe712a1d751dc4ed2e0b6eda8c50d15b13d7b8511df2f0e60209d69e64416d",
+    "webview/assets/async/325056.d8e545b442.js": "52610d698ad2f03eebc66f4ff23b8d82888c6fe12bebacd62401813caf506b62",
+    "webview/assets/async/fac116321606.css": "0bec2609ff90d4ceb0ae1ced2eb3b02a6c51907fea02720e5d32a000273019c1",
+    "webview/assets/async/4d4bc71faeae.css": "bc26b13d2ab1360d5d7f60005dcaa7c2e8975a220ee99d792df1c11bd24271eb",
+    "webview/assets/async/e5feae8335e3.css": "417ccd82fcda4a175da9fbe705f28d973fff56817d610857e04bfc4e89eca975",
+    "webview/assets/async/8833bc1ac67a.css": "4df102093390bbda3fba9c91ad950b3c405cf304f7404d1fdd72a12262119bdd"
+  },
+  "runtimeBinaries": {
+    "ChatGPT.exe": "d2c25e7739221d80f0bd0a64f2f2cb0671630073bc9e9a6ab47868103635a83c",
+    "chrome.dll": "18fd2723c7359468fd4e8dafa4c539ce2a077bd3dc3f314eb4abb22e64e39650"
+  },
+  "observedSelectors": [
+    "main[data-app-shell-main-surface]",
+    "[data-codex-composer-root]",
+    "[data-composer-surface-variant]",
+    "[data-slate-sidebar-content]",
+    "[data-app-action-sidebar-thread-id]",
+    "[data-testid=\"home-icon\"]",
+    "[data-composer-navigation-target=\"workspace-project\"]",
+    "[data-thread-user-message-navigation-content]",
+    "[data-composer-utility-rail]",
+    "[data-composer-rail]",
+    "[data-oai-writing-block-surface]",
+    "[data-user-message-bubble]",
+    "[data-radix-popper-content-wrapper]",
+    "[data-code-block]",
+    "[data-testid=\"chatgpt-chart-content-reference\"]",
+    "[data-chatgpt-mermaid-preview]",
+    "[data-code-block-preview-pane]",
+    "[data-feature=\"game-source\"], [style*=\"--vt-splash-screen-headline\"]",
+    "[data-codex-composer-root], [data-thread-find-composer]",
+    ".root-HUUPVC[role=\"group\"]",
+    ".background-uNUrfY[aria-hidden=\"true\"], .MainContentTopFade-T6W4RS[aria-hidden=\"true\"]",
+    "[data-code-block], .CodeBlockPlaceholder-rW0eah",
+    "[data-testid=\"chatgpt-chart-content-reference\"], [data-chatgpt-mermaid-preview], .MermaidBlock-zsG6ii, [data-code-block-preview-pane]",
+    "[data-app-shell-focus-area=\"main\"]",
+    "aside[data-app-shell-focus-area=\"right-panel\"]"
+  ],
+  "adaptationNotes": [
+    "26.1106.51428 / MSIX 26.1106.6628.0: native app upgraded again; original-profile version guard retained.",
+    "Rspack reorganized chunks and renamed several private module IDs. GaA7 still exports the current appServices singleton; Ghh3 Request definition is byte-identical to the previous version.",
+    "The home, sidebar, transcript, native editor surfaces and main/right-pane DOM markers are retained. Home/side-chat wrappers and code/mermaid/decorative CSS classes were checked in the new source.",
+    "Main bootstrap moved from chunk 339 to 631; CODEX_ELECTRON_USER_DATA_PATH and native preload.js path behavior remain present.",
+    "Theme rendering, existing multi-composer handling, local breathing clock, settings and background-folder preferences are preserved; new native preload is checked together with the theme preload."
+  ]
+}

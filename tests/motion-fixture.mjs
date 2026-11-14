@@ -4,21 +4,23 @@ import {fixture, services} from './fixtures.mjs';
 
 // Deterministic DOM probe, not a renderer/FPS benchmark. Only animation frames
 // are advanced; native events, MutationObserver and theme code remain real.
-export async function motionFixture(config = {}) {
-  const dom = new JSDOM(fixture, {url:'https://local.test/', pretendToBeVisual:true});
+export async function motionFixture(config = {}, {html=fixture,compatibility} = {}) {
+  const dom = new JSDOM(html, {url:'https://local.test/', pretendToBeVisual:true});
   const win = dom.window, doc = win.document, frames = new Map();
   let id = 0, time = 0;
   win.requestAnimationFrame = fn => { frames.set(++id, fn); return id; };
   win.cancelAnimationFrame = key => frames.delete(key);
-  win.ResizeObserver = class {observe() {} unobserve() {} disconnect() {}};
+  const observedSizes = new Set();
+  win.ResizeObserver = class {observe(node) {observedSizes.add(node);} unobserve(node) {observedSizes.delete(node);} disconnect() {observedSizes.clear();}};
   win.matchMedia = () => ({matches:false, addEventListener() {}, removeEventListener() {}});
-  win.electronBridge = {getSentryInitOptions:() => ({appVersion:'26.1027.30824'})};
+  win.electronBridge = {getSentryInitOptions:() => ({appVersion:compatibility?.packageVersion ?? '26.1027.30824'})};
   win.aemeathWish = {
     readSettings:async () => ({config:{glowMode:'breathe', breathPeriod:6, breathPeak:100, playing:false, ...config}}),
     getBackgrounds:async()=>({folder:'test',images:[{id:'stars'}]}), readImage:async()=>({bytes:new Uint8Array([1]),mime:'image/png'}),
     saveSettings:async () => ({}), diagnostics:async () => ({})
   };
-  const api = await startTheme(win, {shared:{Vct:services().service}});
+  const service=services().service;
+  const api = await startTheme(win, {shared:{Vct:service,appServices:service},...(compatibility ? {compatibility} : {})});
   const root = doc.querySelector('aemeath-wish-theme').shadowRoot.querySelector('#aw-ui');
   async function step(delta = 1000/60) {
     await new Promise(resolve => setImmediate(resolve));
@@ -28,7 +30,7 @@ export async function motionFixture(config = {}) {
     await new Promise(resolve => setImmediate(resolve));
   }
   for (let i = 0; i < 6; i++) await step();
-  return {win, doc, root, api, frames, step, close() {api.dispose(); win.close();}};
+  return {win, doc, root, api, frames, step, observedSizes, close() {api.dispose(); win.close();}};
 }
 
 export async function measureMotion() {

@@ -1,0 +1,114 @@
+{
+  "adapterVersion": "26.1103.60933-r1",
+  "packageVersion": "26.1103.60933",
+  "msixVersion": "26.1103.7773.0",
+  "nativeUiVerified": false,
+  "excludedWindowRoutes": [
+    "/avatar-overlay",
+    "/spotlight",
+    "/global-dictation",
+    "/hotkey-window"
+  ],
+  "services": {
+    "moduleId": "GaA7",
+    "export": "appServices"
+  },
+  "cloud": {
+    "moduleId": "Ghh3",
+    "client": "Request"
+  },
+  "observedServices": [
+    "projectCatalog.readLocalProjects",
+    "projectCatalog.readRemoteProjects",
+    "projectCatalog.readSelection",
+    "threadProjectAssignments.readMemberships",
+    "localThreadCatalog.readPage",
+    "safeGet /gizmos/snorlax/sidebar",
+    "safeGet /gizmos/{gizmo_id}/conversations"
+  ],
+  "loader": {
+    "kind": "rspack",
+    "module": "./assets/348410.fcfef000d0.js",
+    "export": "__webpack_require__"
+  },
+  "selectors": {
+    "hero": "[data-feature=\"game-source\"], [style*=\"--vt-splash-screen-headline\"]",
+    "composer": "[data-codex-composer-root], [data-thread-find-composer]",
+    "modeToggle": ".root-HUUPVC[role=\"group\"]",
+    "chromeBackdrop": ".background-uNUrfY[aria-hidden=\"true\"], .MainContentTopFade-T6W4RS[aria-hidden=\"true\"]",
+    "codeSurface": "[data-code-block], .CodeBlockPlaceholder-rW0eah",
+    "visualSurface": "[data-testid=\"chatgpt-chart-content-reference\"], [data-chatgpt-mermaid-preview], .MermaidBlock-zsG6ii, [data-code-block-preview-pane]",
+    "mainContent": "[data-app-shell-focus-area=\"main\"]",
+    "sidePanel": "aside[data-app-shell-focus-area=\"right-panel\"]"
+  },
+  "sourceFiles": {
+    "package.json": "445248251a0374a4cff75ef9984713043e1ca034217507cdf4fb050526225b0a",
+    ".vite/build/early-bootstrap.js": "48ba4c29cfafe9f9781355d0357c42c0f8faf5b75a16f49a8bc7c29f26f44950",
+    ".vite/build/preload.js": "d818a5995208a5f7e79ee3f5d0aaa6a7c41a3aae9abde7685a021cc228e7ecf6",
+    ".vite/build/early-bootstrap-339-8b97a30a8b57b9dd.js": "fc074730e0934afbfc1a974e8435670c44a4980015b5468114d9e827d7ced0bd",
+    "webview/index.html": "35774f02194b9a1c414bc7f6050a347535d55d13ee4141aef111dbdc772e9d39",
+    "webview/assets/348410.fcfef000d0.js": "5f8fe626ea1c5a92d99b15bda762fedb6057a8818379bbcb731094ae5e0325a6",
+    "webview/assets/async/182735.7f13786b92.js": "119afcc814fe83e733d5b494d3201afe203c51b8d059998b2a8dbf3ed03ccd85",
+    "webview/assets/async/906498.9a5baab08f.js": "6e39a9d9f08273532fbbe3d49c096b0bceec06011875ab29dc6445b42538c8c2",
+    "webview/assets/async/307320.a9436a8f07.js": "1bb6b2757c054831625f2ade5c8c5e0ed2b441aa7c35b37dbad80a83d81dd836",
+    "webview/assets/async/634175.4437e0034c.js": "e21e10ed45db9613ef69a54a65a06e1deb595ddb38352626e5bb4f864a476f23",
+    "webview/assets/async/795644.4c0b1b435f.js": "b55129a198c8a44764168fb639783f2c42b1173fc0b9d6164dc9541d772306d1",
+    "webview/assets/async/815047.009dfb95bb.js": "36f0d91e67f55ef6f5270bad68c4a11cd9d95c9e9ec8cf13021e1de6acd5fc28",
+    "webview/assets/async/961657.97fdcc5e7d.js": "5c908aacadffe3eb8226e2a8c5e35c4512a04ed598aafc8e653a2d56b9545efb",
+    "webview/assets/async/3773.7593174edc.js": "dc3555bac53b9fb9481f19f59f9cf5556be1d693ef68397717d232bc99ecd72a",
+    "webview/assets/async/39017.8e35999c14.js": "0ffa7144d5b626d9965561ce58c942e49997d5186f5cdb9b94cc6de45313c1da",
+    "webview/assets/async/23355.e36e35a50a.js": "7832d687d6c0c21b0c0db06dca1e272942d179ebdb10eacd0827738580cc9c5a",
+    "webview/assets/async/211643.b468fc3476.js": "d13a346b2094ef0f63604aab59b1ebbcf2d65e1511201f4e0685245b26662e60",
+    "webview/assets/async/884779.bf167971f9.js": "cdc694546dbda438c12a929e692381b1c8c186d4cad9257e69ad5b4163d72d84",
+    "webview/assets/async/499225.6d2e47bea2.js": "80f7a6b651f9f56ac97463123d72963c2a78570f6f0162c75d0d6d9d0a03f074",
+    "webview/assets/async/157919.eb8d85da39.js": "55f2866759cbca167db66035fd0f1928684718087a6588429858e1ef33edc406",
+    "webview/assets/async/456349.0ddba2cb1e.js": "f7b5448fdfb6f41791512f5c0b9f12b7f43ea7af0dd9bdc7bbd4a5226768448e",
+    "webview/assets/async/f0eddefa0de7.css": "b60985fe2d74a3b09eecd7974226a63c12e33768c563bea829ff25166875d463",
+    "webview/assets/async/56bb1d5975aa.css": "036b826295e0f8c9636fc1812a494a65306b0bfaadb23dd692ac91b18f0249da",
+    "webview/assets/async/e77f816560c6.css": "5ef0186201b63a1882a93c4a567040b80d167562656e39036dc8815657d925d6",
+    "webview/assets/async/446282.b840fa32f9.js": "408ab667b936b1a9325c08180e015ecfa6b7af02784cfe14a65d4141b84bb2db",
+    "webview/assets/async/e9cca08fb35b.css": "0c2202cc58e2cf75c4338441ca36a31d215d51e2a7ac8aa907a6905bea5e4542",
+    "webview/assets/async/fac116321606.css": "0bec2609ff90d4ceb0ae1ced2eb3b02a6c51907fea02720e5d32a000273019c1",
+    "webview/assets/782259.7a3e865ee5.js": "5b9221f52d1eea38d1389b1e530c6067a4ca72d86632b4b19247ad6990e37c23",
+    "webview/assets/727403.da6b00f04b.js": "6ea73cd01f995eb8c543bcf50d120ff512d25c291948cb05acdfdadddc02d1f0",
+    "webview/assets/158624.0baba19172.js": "f6638b4beb2a6dda7885a02f98a34ff9eba8b2712c94128cece9ecf40f6a1f7e"
+  },
+  "runtimeBinaries": {
+    "ChatGPT.exe": "831084e8f73dc427d04a9b241a3498e21aadf7b5414b4f0a380f0d67d68800a1",
+    "chrome.dll": "a77250d649caffe0c3ab658ca11fd26d3bc332fd74e7fa51ae553cc64fd33e66"
+  },
+  "observedSelectors": [
+    "main[data-app-shell-main-surface]",
+    "[data-codex-composer-root]",
+    "[data-composer-surface-variant]",
+    "[data-slate-sidebar-content]",
+    "[data-app-action-sidebar-thread-id]",
+    "[data-testid=\"home-icon\"]",
+    "[data-composer-navigation-target=\"workspace-project\"]",
+    "[data-thread-user-message-navigation-content]",
+    "[data-composer-utility-rail]",
+    "[data-composer-rail]",
+    "[data-oai-writing-block-surface]",
+    "[data-user-message-bubble]",
+    "[data-radix-popper-content-wrapper]",
+    "[data-code-block]",
+    "[data-testid=\"chatgpt-chart-content-reference\"]",
+    "[data-chatgpt-mermaid-preview]",
+    "[data-code-block-preview-pane]",
+    "[data-feature=\"game-source\"], [style*=\"--vt-splash-screen-headline\"]",
+    "[data-codex-composer-root], [data-thread-find-composer]",
+    ".root-HUUPVC[role=\"group\"]",
+    ".background-uNUrfY[aria-hidden=\"true\"], .MainContentTopFade-T6W4RS[aria-hidden=\"true\"]",
+    "[data-code-block], .CodeBlockPlaceholder-rW0eah",
+    "[data-testid=\"chatgpt-chart-content-reference\"], [data-chatgpt-mermaid-preview], .MermaidBlock-zsG6ii, [data-code-block-preview-pane]",
+    "[data-app-shell-focus-area=\"main\"]",
+    "aside[data-app-shell-focus-area=\"right-panel\"]"
+  ],
+  "adaptationNotes": [
+    "26.1103.60933 (MSIX 26.1103.7773.0): the installed app upgraded; the existing original-profile version guard correctly rejected the old runtime.",
+    "The Rspack entry URL and native preload changed. The entry still exports __webpack_require__; the adapter reads initialized module cache entries only.",
+    "GaA7, Ghh3, KkZX, otks, ZlsN, vMXo, TsA5, L27m, KVWT, ZIk0 and MzfT factory definitions are byte-identical to the accepted 26.1103.32239 baseline.",
+    "Native main/sidebar/home/composer and side-chat chunks are byte-identical. Shared CSS only adds hiding detached tooltips; theme selectors and rendering code remain unchanged.",
+    "Retains 0.1.14 multi-composer ownership, local breathing updates and independently configured theme folders/settings."
+  ]
+}

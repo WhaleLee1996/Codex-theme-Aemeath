@@ -3,6 +3,8 @@ import {cloudThreads, mergeThreads, normalizeProjects, projectFilter, rankProjec
 // Every native selector and private capability stays in this versioned adapter.
 export const SELECTORS = Object.freeze({
   main: 'main[data-app-shell-main-surface]',
+  mainContent: '[data-app-shell-focus-area="main"]',
+  sidePanel: 'aside[data-app-shell-focus-area="right-panel"]',
   sidebar: '[data-slate-sidebar-content], [data-sidebar-navigation-root]',
   hero: '[data-feature="game-source"].heading-xl',
   homeIcon: '[data-testid="home-icon"]',
@@ -167,7 +169,7 @@ export class MutationJournal {
 }
 
 export class NativeDom {
-  constructor(document) { this.doc = document; this.journal = new MutationJournal(); this.homeJournal = new MutationJournal(); this.pickerJournal = new MutationJournal(); this.picker = null; this.nodes = {}; this.onChange = () => {}; }
+  constructor(document, selectors = {}) { this.selectors = {...SELECTORS, ...selectors}; this.doc = document; this.journal = new MutationJournal(); this.homeJournal = new MutationJournal(); this.pickerJournal = new MutationJournal(); this.picker = null; this.nodes = {}; this.onChange = () => {}; }
   active(element) {
     if (!element || element.closest('[hidden], [inert], [aria-hidden="true"]')) return false;
     // React can retain previous routes using CSS rather than HTML hidden.
@@ -180,26 +182,49 @@ export class NativeDom {
     }
     return true;
   }
+  homeMode(hero) {
+    // The version-pinned native toggle orders Chat, then Work. Read its actual
+    // pressed state so cloud Work composers are not mistaken for Chat forms.
+    for (const toggle of this.doc.querySelectorAll(this.selectors.modeToggle)) {
+      if (!this.active(toggle) || toggle.closest(`${this.selectors.sidePanel}, [role="dialog"]`)) continue;
+      const buttons = [...toggle.querySelectorAll('button[aria-pressed]')].filter(button => this.active(button));
+      if (buttons.length === 2 && buttons.filter(button => button.getAttribute('aria-pressed') === 'true').length === 1) return buttons[0].getAttribute('aria-pressed') === 'true' ? 'chat' : 'work';
+    }
+    // Local Work homes may omit the mode toggle; their native heading keeps
+    // this marker. Unknown home variants retain the existing welcome layout.
+    return hero?.getAttribute('data-feature') === 'game-source' ? 'work' : null;
+  }
   find() {
-    const mains = [...this.doc.querySelectorAll(SELECTORS.main)].filter(e => this.active(e));
+    const mains = [...this.doc.querySelectorAll(this.selectors.main)].filter(e => this.active(e));
     const main = mains.length === 1 ? mains[0] : null;
-    const roots = main ? [...main.querySelectorAll(SELECTORS.composer)].filter(e => this.active(e)) : [];
+    const roots = main ? [...main.querySelectorAll(this.selectors.composer)].filter(e => this.active(e)) : [];
     const candidates = roots.filter(e => !roots.some(parent => parent !== e && parent.contains(e)));
-    const composer = candidates.length === 1 ? candidates[0] : null;
-    const surface = composer?.querySelector(SELECTORS.surface) ?? null;
-    const input = composer?.querySelector(SELECTORS.input) ?? null;
-    const hero = [...(main?.querySelectorAll(SELECTORS.hero) ?? [])].find(e => this.active(e)) ?? null;
+    // The shell contains both the main chat and temporary right-panel chats.
+    // Deduplicate nested native composer wrappers, then bind each real editor.
+    const composers = candidates.map(composer => {
+      const surface = [...composer.querySelectorAll(this.selectors.surface)].find(e => this.active(e)) ?? null;
+      const input = surface ? [...surface.querySelectorAll(this.selectors.input)].find(e => this.active(e)) ?? null : null;
+      const sidePanel = composer.closest(this.selectors.sidePanel);
+      const contentRoot = sidePanel ?? composer.closest(this.selectors.mainContent) ?? main;
+      const railScope = composer.closest(this.selectors.homeComposer) ?? composer;
+      const rails = [...railScope.querySelectorAll(this.selectors.composerRail)].filter(e => this.active(e));
+      return {composer,surface,input,sidePanel,contentRoot,rails};
+    }).filter(n => n.surface && n.input);
+    const primaryCandidates = composers.filter(n => !n.sidePanel);
+    const primary = primaryCandidates.length === 1 ? primaryCandidates[0] : null;
+    const {composer=null,surface=null,input=null,rails=[]} = primary ?? {};
+    const contentRoot = primary?.contentRoot ?? main;
+    const inPrimary = e => !e.closest(this.selectors.sidePanel) && this.active(e);
+    const hero = [...(contentRoot?.querySelectorAll(this.selectors.hero) ?? [])].find(inPrimary) ?? null;
     // With no selected project the native heading is plain text. The actual
     // picker then lives in the composer's utility bar, with an accessible label.
-    const pickerCandidates = main ? [...main.querySelectorAll('button')].filter(e => {
+    const pickerCandidates = contentRoot ? [...contentRoot.querySelectorAll('button')].filter(e => {
       const label = (e.getAttribute('aria-label') || e.textContent || '').trim();
-      const matches = e.matches(SELECTORS.projectPicker) || e.querySelector(SELECTORS.projectPicker) || /^(Choose project|Select project|Change project[:：]|选择项目|更改项目|切换项目)/i.test(label);
-      return matches && !e.disabled && e.getAttribute('aria-disabled') !== 'true' && this.active(e);
+      const matches = e.matches(this.selectors.projectPicker) || e.querySelector(this.selectors.projectPicker) || /^(Choose project|Select project|Change project[:：]|选择项目|更改项目|切换项目)/i.test(label);
+      return matches && !e.disabled && e.getAttribute('aria-disabled') !== 'true' && inPrimary(e);
     }) : [];
     const projectTrigger = hero?.querySelector('button:not(:disabled)') ?? pickerCandidates[0] ?? null;
-    const isHome = !!(hero && composer && input && (composer.dataset.composerPlacement === 'home' || composer.closest(SELECTORS.homeComposer)));
-    const railScope = composer?.closest(SELECTORS.homeComposer) ?? composer;
-    const rails = [...(railScope?.querySelectorAll(SELECTORS.composerRail) ?? [])].filter(e => this.active(e));
+    const isHome = !!(hero && composer && input && (composer.dataset.composerPlacement === 'home' || composer.closest(this.selectors.homeComposer)));
     let dockRoot = composer;
     // Some native home variants render the utility rail beside the form. Dock
     // their existing common wrapper so the bar and editor never separate.
@@ -207,50 +232,53 @@ export class NativeDom {
       let candidate = composer.parentElement;
       while (candidate && candidate !== main && !rails.every(rail => candidate.contains(rail))) candidate = candidate.parentElement;
       while (candidate && candidate !== main && this.doc.defaultView.getComputedStyle(candidate).display === 'contents') candidate = candidate.parentElement;
-      if (candidate && candidate !== main && !candidate.contains(hero) && !candidate.querySelector(SELECTORS.modeToggle)) dockRoot = candidate;
+      if (candidate && candidate !== main && !candidate.contains(hero) && !candidate.querySelector(this.selectors.modeToggle)) dockRoot = candidate;
     }
-    const sidebarCandidates = [...this.doc.querySelectorAll(SELECTORS.sidebar)].filter(e => !e.closest('[data-sidebar-collapsed]') && this.active(e));
+    const sidebarCandidates = [...this.doc.querySelectorAll(this.selectors.sidebar)].filter(e => !e.closest('[data-sidebar-collapsed]') && this.active(e));
     const sidebar = sidebarCandidates.filter(e => !sidebarCandidates.some(parent => parent !== e && parent.contains(e)));
-    return {main, composer, surface, input, hero, projectTrigger, isHome, sidebar, rails, dockRoot};
+    return {main, contentRoot, composers, composer, surface, input, hero, projectTrigger, isHome, homeMode:isHome ? this.homeMode(hero) : null, sidebar, rails, dockRoot};
   }
   attach() {
     const nodes = this.find();
-    if (nodes.main !== this.nodes.main || nodes.hero !== this.nodes.hero || nodes.composer !== this.nodes.composer || nodes.dockRoot !== this.nodes.dockRoot || nodes.projectTrigger !== this.nodes.projectTrigger || nodes.isHome !== this.nodes.isHome) {
-      this.resetProjectPicker(); this.homeJournal.restore(); this.journal.restore();
-    }
+    const primaryChanged = nodes.main !== this.nodes.main || nodes.contentRoot !== this.nodes.contentRoot || nodes.hero !== this.nodes.hero || nodes.composer !== this.nodes.composer || nodes.dockRoot !== this.nodes.dockRoot || nodes.projectTrigger !== this.nodes.projectTrigger || nodes.isHome !== this.nodes.isHome;
+    const bindings = n => (n.composers ?? []).flatMap(c => [c.composer,c.surface,c.input,c.contentRoot,...c.rails]);
+    const previous = bindings(this.nodes), current = bindings(nodes);
+    if (primaryChanged) {this.resetProjectPicker(); this.homeJournal.restore();}
+    if (primaryChanged || previous.length !== current.length || current.some((node,i) => node !== previous[i])) this.journal.restore();
     this.nodes = nodes;
     if (!nodes.main) return nodes;
     this.journal.attr(nodes.main, 'data-aw-main', '');
-    this.journal.attr(nodes.main, 'data-aw-page', nodes.isHome ? 'home' : nodes.composer ? 'conversation' : 'other');
+    this.journal.attr(nodes.main, 'data-aw-page', nodes.isHome ? 'home' : nodes.composers.length ? 'conversation' : 'other');
     for (let node = nodes.main; node && node !== this.doc.documentElement; node = node.parentElement) this.journal.attr(node, 'data-aw-clear', '');
     for (const sidebar of nodes.sidebar) {
       this.journal.attr(sidebar, 'data-aw-sidebar', '');
       // Native sidebar wrappers also carry opaque surfaces.
       for (let n = sidebar.parentElement, depth = 0; n && depth < 3 && !n.contains(nodes.main); n = n.parentElement, depth++) this.journal.attr(n, 'data-aw-clear', '');
     }
-    if (nodes.surface && nodes.input) {
-      this.journal.attr(nodes.surface, 'data-aw-composer', '');
-      for (const rail of nodes.rails) {
+    for (const chat of nodes.composers) {
+      this.journal.attr(chat.surface, 'data-aw-composer', '');
+      for (const rail of chat.rails) {
         this.journal.attr(rail, 'data-aw-composer-rail', '');
-        const frame = rail.closest(SELECTORS.composerRailFrame);
+        const frame = rail.closest(this.selectors.composerRailFrame);
         if (frame && nodes.main.contains(frame)) this.journal.attr(frame,'data-aw-composer-rail-frame',frame.dataset.composerRailPlacement === 'below' ? 'below' : 'above');
       }
-      // Clear the form itself too: ChatGPT's thread/new-chat composer uses a
-      // form root instead of the separate Codex homepage wrapper.
-      for (let node = nodes.surface.parentElement; node && nodes.main.contains(node); node = node.parentElement) this.journal.attr(node, 'data-aw-clear', '');
-      for (let node = nodes.composer.parentElement; node && nodes.main.contains(node); node = node.parentElement) this.journal.attr(node, 'data-aw-clear', '');
+      // Clear only identified editor layout paths, including the side panel.
+      // One shared main tint avoids stacking opacity once per chat pane.
+      for (let node = chat.surface.parentElement; node && nodes.main.contains(node); node = node.parentElement) this.journal.attr(node, 'data-aw-clear', '');
+      // A homepage has no main conversation tint: give its side chat its own.
+      if (nodes.isHome && chat.sidePanel) this.journal.attr(chat.sidePanel, 'data-aw-page', 'conversation');
     }
-    for (const backdrop of nodes.main.querySelectorAll(SELECTORS.chromeBackdrop)) this.journal.attr(backdrop, 'data-aw-native-backdrop', '');
+    for (const backdrop of nodes.main.querySelectorAll(this.selectors.chromeBackdrop)) this.journal.attr(backdrop, 'data-aw-native-backdrop', '');
     // Transcript and composer are separate branches. Clear layout containers,
     // then apply each identified content type's palette without rewriting it.
     for (const transcript of nodes.main.querySelectorAll('[data-thread-user-message-navigation-content]')) {
       if (!this.active(transcript)) continue;
       for (let node = transcript; node && nodes.main.contains(node); node = node.parentElement) this.journal.attr(node, 'data-aw-clear', '');
     }
-    for (const surface of nodes.main.querySelectorAll(SELECTORS.writingSurface)) this.journal.attr(surface,'data-aw-writing','');
-    for (const bubble of nodes.main.querySelectorAll(SELECTORS.userMessageBubble)) this.journal.attr(bubble,'data-aw-user-message','');
-    for (const code of nodes.main.querySelectorAll(SELECTORS.codeSurface)) this.journal.attr(code,'data-aw-code','');
-    for (const visual of nodes.main.querySelectorAll(SELECTORS.visualSurface)) this.journal.attr(visual,'data-aw-visual','');
+    for (const surface of nodes.main.querySelectorAll(this.selectors.writingSurface)) this.journal.attr(surface,'data-aw-writing','');
+    for (const bubble of nodes.main.querySelectorAll(this.selectors.userMessageBubble)) this.journal.attr(bubble,'data-aw-user-message','');
+    for (const code of nodes.main.querySelectorAll(this.selectors.codeSurface)) this.journal.attr(code,'data-aw-code','');
+    for (const visual of nodes.main.querySelectorAll(this.selectors.visualSurface)) this.journal.attr(visual,'data-aw-visual','');
     return nodes;
   }
   enhanceHome(enabled) {
@@ -258,23 +286,28 @@ export class NativeDom {
     if (!enabled || !n.isHome) {this.homeJournal.restore(); return;}
     this.homeJournal.attr(n.hero, 'data-aw-original-hero', '');
     for (let node = n.hero.parentElement; node && n.main.contains(node); node = node.parentElement) this.homeJournal.attr(node, 'data-aw-clear', '');
-    for (const icon of n.main.querySelectorAll(SELECTORS.homeIcon)) this.homeJournal.attr(icon, 'data-aw-original-home-icon', '');
+    for (const icon of n.contentRoot.querySelectorAll(this.selectors.homeIcon)) this.homeJournal.attr(icon, 'data-aw-original-home-icon', '');
     if (n.hero.contains(n.projectTrigger)) this.homeJournal.attr(n.projectTrigger, 'tabindex', '-1');
-    for (const e of n.main.querySelectorAll('[data-home-ambient-suggestions]')) this.homeJournal.attr(e, 'data-aw-original-suggestions', '');
+    for (const e of n.contentRoot.querySelectorAll('[data-home-ambient-suggestions]')) this.homeJournal.attr(e, 'data-aw-original-suggestions', '');
     this.homeJournal.attr(n.main, 'data-aw-home', '');
   }
   contentBounds() {
-    const main = this.nodes.main?.getBoundingClientRect();
-    if (!main) return null;
+    const shell = this.nodes.main?.getBoundingClientRect();
+    if (!shell) return null;
+    const pane = this.nodes.contentRoot?.getBoundingClientRect();
+    // In split view the welcome card and project cards belong to the primary
+    // content pane, not the full shell width occupied by the side chat.
+    const main = pane?.width > 0 && pane?.height > 0 ? {left:Math.max(shell.left,pane.left),right:Math.min(shell.right,pane.right),top:Math.max(shell.top,pane.top),bottom:Math.min(shell.bottom,pane.bottom)} : shell;
+    const width = Math.max(0,main.right-main.left), height = Math.max(0,main.bottom-main.top);
     let top = main.top;
     // Header and Chat/Work controls may be siblings of the main surface.
     // Measure the real visible controls instead of assuming a fixed header size.
-    for (const node of this.doc.querySelectorAll(`${SELECTORS.header}, ${SELECTORS.modeToggle}`)) {
+    for (const node of this.doc.querySelectorAll(`${this.selectors.header}, ${this.selectors.modeToggle}`)) {
       if (!this.active(node) || node.closest('[role="dialog"]')) continue;
       const r = node.getBoundingClientRect();
-      if (r.width > 0 && r.height > 0 && r.right > main.left && r.left < main.right && r.top < main.top + Math.min(180,main.height/3) && r.bottom > main.top) top = Math.max(top,r.bottom + (node.matches(SELECTORS.modeToggle) ? 10 : 0));
+      if (r.width > 0 && r.height > 0 && r.right > main.left && r.left < main.right && r.top < main.top + Math.min(180,height/3) && r.bottom > main.top) top = Math.max(top,r.bottom + (node.matches(this.selectors.modeToggle) ? 10 : 0));
     }
-    return {left:main.left, right:main.right, top, bottom:main.bottom, width:main.width, height:Math.max(0,main.bottom-top)};
+    return {left:main.left, right:main.right, top, bottom:main.bottom, width, height:Math.max(0,main.bottom-top)};
   }
   composerBounds() {
     const {composer,surface,rails,dockRoot} = this.nodes;
@@ -335,7 +368,7 @@ export class NativeDom {
     }
     picker.opened=true; win.clearTimeout(picker.timer);
     const menu=this.doc.getElementById(trigger.getAttribute('aria-controls') ?? '');
-    const frame=menu?.closest(SELECTORS.popupFrame);
+    const frame=menu?.closest(this.selectors.popupFrame);
     if (!frame || !this.active(menu)) return;
     if (picker.frame && picker.frame!==frame) this.pickerJournal.restore();
     picker.frame=frame;
@@ -377,7 +410,7 @@ export class NativeDom {
       this.doc.defaultView.dispatchEvent(new this.doc.defaultView.MessageEvent('message', {data:{type:'navigate-to-route', path}}));
       return;
     }
-    const row = [...this.doc.querySelectorAll(`[${SELECTORS.threadId}]`)].find(e => e.getAttribute(SELECTORS.threadId) === thread.threadId && (e.getAttribute(SELECTORS.threadHost) ?? 'local') === thread.hostId);
+    const row = [...this.doc.querySelectorAll(`[${this.selectors.threadId}]`)].find(e => e.getAttribute(this.selectors.threadId) === thread.threadId && (e.getAttribute(this.selectors.threadHost) ?? 'local') === thread.hostId);
     if (row) { (row.querySelector('[data-interactive-row-link]') ?? row).click(); return; }
     // This is the same renderer notification consumed by the native router.
     this.doc.defaultView.dispatchEvent(new this.doc.defaultView.MessageEvent('message', {data: {type: 'navigate-to-route', path: `/local/${encodeURIComponent(thread.threadId)}`, threadSelection: {kind: 'local', conversationId: thread.threadId, hostId: thread.hostId}}}));
@@ -385,7 +418,7 @@ export class NativeDom {
   diagnose() {
     const n = this.nodes;
     const rect = e => {const r = e?.getBoundingClientRect(); return r ? {x: Math.round(r.x), y: Math.round(r.y), width: Math.round(r.width), height: Math.round(r.height)} : null;};
-    return {main: !!n.main, homepage: !!n.isHome, composer: !!n.composer, composerKind: n.composer?.tagName ?? null, surface: !!n.surface, editor: !!n.input, nativeProjectPicker: !!n.projectTrigger, sidebarCount: n.sidebar?.length ?? 0, mainCandidates:this.doc.querySelectorAll(SELECTORS.main).length, composerCandidates:this.doc.querySelectorAll(SELECTORS.composer).length, mainRect: rect(n.main), composerRect: rect(n.surface), contentRect:this.contentBounds(), fullComposerRect:this.composerBounds(), dockOffset:n.dockRoot?.style.getPropertyValue('--aw-home-dock-y') ?? '', dockIncludesUtilityWrapper:!!n.dockRoot && n.dockRoot !== n.composer, decorativeLayers:n.main?.querySelectorAll('[data-aw-native-backdrop]').length ?? 0, utilityRails:n.rails?.length ?? 0};
+    return {main: !!n.main, homepage: !!n.isHome, homeMode:n.homeMode ?? null, composer: !!n.composer, composerKind: n.composer?.tagName ?? null, surface: !!n.surface, editor: !!n.input, nativeProjectPicker: !!n.projectTrigger, sidebarCount: n.sidebar?.length ?? 0, recognizedComposers:n.composers?.length ?? 0, sideChatComposers:n.composers?.filter(c=>c.sidePanel).length ?? 0, composers:(n.composers ?? []).map(c=>({kind:c.sidePanel?'side-chat':'main',composerRect:rect(c.surface),editor:!!c.input,utilityRails:c.rails.length})), mainCandidates:this.doc.querySelectorAll(this.selectors.main).length, composerCandidates:this.doc.querySelectorAll(this.selectors.composer).length, mainRect: rect(n.main), composerRect: rect(n.surface), contentRect:this.contentBounds(), fullComposerRect:this.composerBounds(), dockOffset:n.dockRoot?.style.getPropertyValue('--aw-home-dock-y') ?? '', dockIncludesUtilityWrapper:!!n.dockRoot && n.dockRoot !== n.composer, decorativeLayers:n.main?.querySelectorAll('[data-aw-native-backdrop]').length ?? 0, utilityRails:n.rails?.length ?? 0};
   }
   dispose() { this.resetProjectPicker(); this.homeJournal.restore(); this.journal.restore(); }
 }

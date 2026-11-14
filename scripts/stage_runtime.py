@@ -115,6 +115,8 @@ def stage(app_path):
             raise ValueError(f'Installed runtime binary changed: {name}. Adaptation is required.')
     build = ROOT / 'dist'
     build_manifest = json.loads((build / 'build-manifest.json').read_text())
+    if build_manifest.get('appVersion') != version or build_manifest.get('adapterVersion') != adapter['adapterVersion']:
+        raise ValueError('Theme build targets a different adapter; rebuild for the installed Codex version.')
     for item in build_manifest['files']:
         if digest((build/item['name']).read_bytes()) != item['sha256']:
             raise ValueError(f'Build file changed: {item["name"]}; run npm run build.')

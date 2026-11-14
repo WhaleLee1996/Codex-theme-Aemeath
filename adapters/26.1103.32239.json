@@ -1,0 +1,110 @@
+{
+  "adapterVersion": "26.1103.32239-r2",
+  "packageVersion": "26.1103.32239",
+  "msixVersion": "26.1103.4239.0",
+  "nativeUiVerified": false,
+  "excludedWindowRoutes": [
+    "/avatar-overlay",
+    "/spotlight",
+    "/global-dictation",
+    "/hotkey-window"
+  ],
+  "services": {
+    "moduleId": "GaA7",
+    "export": "appServices"
+  },
+  "cloud": {
+    "moduleId": "Ghh3",
+    "client": "Request"
+  },
+  "observedServices": [
+    "projectCatalog.readLocalProjects",
+    "projectCatalog.readRemoteProjects",
+    "projectCatalog.readSelection",
+    "threadProjectAssignments.readMemberships",
+    "localThreadCatalog.readPage",
+    "safeGet /gizmos/snorlax/sidebar",
+    "safeGet /gizmos/{gizmo_id}/conversations"
+  ],
+  "loader": {
+    "kind": "rspack",
+    "module": "./assets/348410.792d1c9584.js",
+    "export": "__webpack_require__"
+  },
+  "selectors": {
+    "hero": "[data-feature=\"game-source\"], [style*=\"--vt-splash-screen-headline\"]",
+    "composer": "[data-codex-composer-root], [data-thread-find-composer]",
+    "modeToggle": ".root-HUUPVC[role=\"group\"]",
+    "chromeBackdrop": ".background-uNUrfY[aria-hidden=\"true\"], .MainContentTopFade-T6W4RS[aria-hidden=\"true\"]",
+    "codeSurface": "[data-code-block], .CodeBlockPlaceholder-rW0eah",
+    "visualSurface": "[data-testid=\"chatgpt-chart-content-reference\"], [data-chatgpt-mermaid-preview], .MermaidBlock-zsG6ii, [data-code-block-preview-pane]",
+    "mainContent": "[data-app-shell-focus-area=\"main\"]",
+    "sidePanel": "aside[data-app-shell-focus-area=\"right-panel\"]"
+  },
+  "sourceFiles": {
+    "package.json": "b093e6a34b77da9e5fa53d5924415f5611a28367d2ff297bb3d2ce2141688c00",
+    ".vite/build/early-bootstrap.js": "130d12cbaa4335cd6f21c8d281b9706c6c25f5c8be455cef1c85f57cdd5613b4",
+    ".vite/build/preload.js": "29c60ab997daa6eef349e4e3e4d4a3474468265590a9301d0718b4b2c8ca18f4",
+    ".vite/build/early-bootstrap-339-ce026819bf837ba7.js": "3147715e4f64625f331cacd455d3474dcaa368da7579b8ed69f3d8b746509ad8",
+    "webview/index.html": "93401a7bcf17d85e445060004f1ae0352b3f84f823f8fb3891312b68bc59d10d",
+    "webview/assets/348410.792d1c9584.js": "81365fe5fac4856612c18aeacd8bce046d5fda809ff2829075a3d83f32f4a9d5",
+    "webview/assets/async/182735.bb2cb0d2af.js": "ab463aa100bbd1c6306d7b32c9de911db22d9bd03ee7a30f844e32d0069916ce",
+    "webview/assets/async/906498.9a5baab08f.js": "6e39a9d9f08273532fbbe3d49c096b0bceec06011875ab29dc6445b42538c8c2",
+    "webview/assets/async/307320.a9436a8f07.js": "1bb6b2757c054831625f2ade5c8c5e0ed2b441aa7c35b37dbad80a83d81dd836",
+    "webview/assets/async/634175.4437e0034c.js": "e21e10ed45db9613ef69a54a65a06e1deb595ddb38352626e5bb4f864a476f23",
+    "webview/assets/async/795644.4c0b1b435f.js": "b55129a198c8a44764168fb639783f2c42b1173fc0b9d6164dc9541d772306d1",
+    "webview/assets/async/815047.009dfb95bb.js": "36f0d91e67f55ef6f5270bad68c4a11cd9d95c9e9ec8cf13021e1de6acd5fc28",
+    "webview/assets/async/961657.97fdcc5e7d.js": "5c908aacadffe3eb8226e2a8c5e35c4512a04ed598aafc8e653a2d56b9545efb",
+    "webview/assets/async/3773.7593174edc.js": "dc3555bac53b9fb9481f19f59f9cf5556be1d693ef68397717d232bc99ecd72a",
+    "webview/assets/async/39017.8e35999c14.js": "0ffa7144d5b626d9965561ce58c942e49997d5186f5cdb9b94cc6de45313c1da",
+    "webview/assets/async/23355.e36e35a50a.js": "7832d687d6c0c21b0c0db06dca1e272942d179ebdb10eacd0827738580cc9c5a",
+    "webview/assets/async/211643.b468fc3476.js": "d13a346b2094ef0f63604aab59b1ebbcf2d65e1511201f4e0685245b26662e60",
+    "webview/assets/async/884779.bf167971f9.js": "cdc694546dbda438c12a929e692381b1c8c186d4cad9257e69ad5b4163d72d84",
+    "webview/assets/async/499225.6d2e47bea2.js": "80f7a6b651f9f56ac97463123d72963c2a78570f6f0162c75d0d6d9d0a03f074",
+    "webview/assets/async/157919.eb8d85da39.js": "55f2866759cbca167db66035fd0f1928684718087a6588429858e1ef33edc406",
+    "webview/assets/async/456349.0ddba2cb1e.js": "f7b5448fdfb6f41791512f5c0b9f12b7f43ea7af0dd9bdc7bbd4a5226768448e",
+    "webview/assets/async/ef088f0f36db.css": "def090a9189bfb851c536c82a0ba3104148775ceabebb2db0606cdbe9548185b",
+    "webview/assets/async/56bb1d5975aa.css": "036b826295e0f8c9636fc1812a494a65306b0bfaadb23dd692ac91b18f0249da",
+    "webview/assets/async/e77f816560c6.css": "5ef0186201b63a1882a93c4a567040b80d167562656e39036dc8815657d925d6",
+    "webview/assets/async/446282.b840fa32f9.js": "408ab667b936b1a9325c08180e015ecfa6b7af02784cfe14a65d4141b84bb2db",
+    "webview/assets/async/e9cca08fb35b.css": "0c2202cc58e2cf75c4338441ca36a31d215d51e2a7ac8aa907a6905bea5e4542",
+    "webview/assets/async/fac116321606.css": "0bec2609ff90d4ceb0ae1ced2eb3b02a6c51907fea02720e5d32a000273019c1"
+  },
+  "runtimeBinaries": {
+    "ChatGPT.exe": "5586707af6624c04959ba2c5b4ad6d216a1d8ed17c04937a757495649de44b92",
+    "chrome.dll": "5b49a79ce8e495725dfd1c38ea79cfab87b8da9488c897dc2e44f3bfbcb070c6"
+  },
+  "observedSelectors": [
+    "main[data-app-shell-main-surface]",
+    "[data-codex-composer-root]",
+    "[data-composer-surface-variant]",
+    "[data-slate-sidebar-content]",
+    "[data-app-action-sidebar-thread-id]",
+    "[data-testid=\"home-icon\"]",
+    "[data-composer-navigation-target=\"workspace-project\"]",
+    "[data-thread-user-message-navigation-content]",
+    "[data-composer-utility-rail]",
+    "[data-composer-rail]",
+    "[data-oai-writing-block-surface]",
+    "[data-user-message-bubble]",
+    "[data-radix-popper-content-wrapper]",
+    "[data-code-block]",
+    "[data-testid=\"chatgpt-chart-content-reference\"]",
+    "[data-chatgpt-mermaid-preview]",
+    "[data-code-block-preview-pane]",
+    "[data-feature=\"game-source\"], [style*=\"--vt-splash-screen-headline\"]",
+    "[data-codex-composer-root], [data-thread-find-composer]",
+    ".root-HUUPVC[role=\"group\"]",
+    ".background-uNUrfY[aria-hidden=\"true\"], .MainContentTopFade-T6W4RS[aria-hidden=\"true\"]",
+    "[data-code-block], .CodeBlockPlaceholder-rW0eah",
+    "[data-testid=\"chatgpt-chart-content-reference\"], [data-chatgpt-mermaid-preview], .MermaidBlock-zsG6ii, [data-code-block-preview-pane]"
+  ],
+  "adaptationNotes": [
+    "Native index now uses an Rspack ESM runtime exporting __webpack_require__. Only the existing cache is read; factories are never invoked by the theme.",
+    "GaA7 exports appServices; Ghh3 exports the existing initialized Request client.",
+    "Home headline marker moved to the wrapper, and the chat composer can use a div wrapper.",
+    "Decorative footer, mode-toggle, code-placeholder and Mermaid CSS classes changed.",
+    "26.1103.32239: native preload, GaA7 services, Ghh3 request client, KkZX footer and vMXo mode-toggle definitions are unchanged from the accepted 26.1103.31037 baseline.",
+    "Updated entry URLs, source hashes and runtime binary hashes after checking the installed app. DOM selectors and theme rendering code are unchanged."
+  ]
+}

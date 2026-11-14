@@ -1,5 +1,6 @@
 import {reference, template} from './reference.mjs';
-import {compatibility} from './compatibility.mjs';
+import {compatibility as builtCompatibility} from './compatibility.mjs';
+import {loadNativeBindings} from './native-loader.mjs';
 import {CONFIG_VERSION, normalizeConfig, serializeConfig, changeTheme, rememberTheme, LIMITS, clamp, nextWallpaper} from './core.mjs';
 import {createWallpaperPlayer} from './wallpaper-player.mjs';
 import {createBreathing} from './motion.mjs';
@@ -7,6 +8,7 @@ import {NativeCatalog, NativeCloud, NativeDom, MutationJournal} from './native.m
 import {createView} from './ui.mjs';
 
 export async function startTheme(win = window, options = {}) {
+  const compatibility = options.compatibility ?? builtCompatibility;
   const doc = win.document;
   if (win.__aemeathWishRuntime) return win.__aemeathWishRuntime;
   const bridge = win.aemeathWish;
@@ -37,23 +39,16 @@ export async function startTheme(win = window, options = {}) {
   let disposed = false, saveTimer, saveChain = Promise.resolve(), layoutFrame = null;
   let carouselTimer, catalogTimer, backgroundTimer, backgroundRefresh = null, backgroundEpoch = 0, snapshot = null, catalogError = null;
   const failedImages = new Map();
-  let minimumComposerHeight = null, activeSurface = null, lastProjectLabel = null, started = performance.now();
+  let lastProjectLabel = null, started = performance.now();
   const errors = [];
   const record = error => {errors.push({at: Date.now(), message: String(error?.message ?? error).slice(0, 200)}); if (errors.length > 20) errors.shift();};
   const reduced = win.matchMedia('(prefers-reduced-motion: reduce)');
-  const native = new NativeDom(doc), journal = new MutationJournal();
+  const native = new NativeDom(doc, compatibility.selectors), journal = new MutationJournal();
   native.onChange = scheduleLayout;
   const rootStyles = new Set();
-  let shared, cloudModule;
-  try {shared = options.shared ?? await import(new URL(compatibility.services.module, doc.baseURI).href);} catch (error) {record(error);}
-  if (!options.shared || options.cloudModule) {
-    try {
-      cloudModule = options.cloudModule ?? await import(new URL(compatibility.cloud.module, doc.baseURI).href);
-      cloudModule[compatibility.cloud.initialize]?.();
-    } catch (error) {record(error);}
-  }
-  const cloud = cloudModule ? new NativeCloud(() => cloudModule[compatibility.cloud.client]) : null;
-  const catalog = new NativeCatalog(() => shared?.[compatibility.services.export], {cloud, getPins:() => config.pinnedProjects});
+  const bindings = await loadNativeBindings(doc, compatibility, options, record);
+  const cloud = bindings.getCloud ? new NativeCloud(bindings.getCloud) : null;
+  const catalog = new NativeCatalog(bindings.getServices, {cloud, getPins:() => config.pinnedProjects});
   const view = createView(doc, template, new URL('./ui.css', import.meta.url).href, reference, {
     async theme(name) {
       if (name === config.theme) return;
@@ -114,12 +109,37 @@ export async function startTheme(win = window, options = {}) {
     acceptBackgrounds(backgroundSnapshot);
     if(!config.wallpaperIds.length)view.toast('文件夹内的图片暂时无法显示，请检查后刷新');
   }});
-  const glow = view.$('.aw-live-glow'), stars = [view.$('.aw-live-star-one'), view.$('.aw-live-star-two')];
-  const motionNodes = [glow, ...stars];
-  // Animate three theme-owned leaves only. An inherited variable on <html>
-  // invalidated styles across the native app on every breathing frame. The
-  // shadow shape is now static; only its independent layer's opacity changes.
-  const breathing = createBreathing({requestFrame: fn => win.requestAnimationFrame(fn), cancelFrame: id => win.cancelAnimationFrame(id), visible: () => !disposed && view.host.isConnected && !doc.hidden && config.enabled && !!native.nodes.surface, reduced: () => reduced.matches, write: value => {
+  const effects = [{halo:view.$('.aw-live-halo'),glow:view.$('.aw-live-glow'),stars:[view.$('.aw-live-star-one'),view.$('.aw-live-star-two')],surface:null,minimumHeight:null}];
+  let motionNodes = [effects[0].glow,...effects[0].stars];
+  const observedSurfaces = new Set();
+  function bindComposerEffects(chats) {
+    const surfaces = new Set(chats.map(chat => chat.surface));
+    for (const surface of observedSurfaces) if (!surfaces.has(surface)) {resize.unobserve(surface);observedSurfaces.delete(surface);}
+    for (const surface of surfaces) if (!observedSurfaces.has(surface)) {resize.observe(surface);observedSurfaces.add(surface);}
+    // Keep one inert template when there are no editors. Additional local
+    // layers live only while their visible native composer exists.
+    while (effects.length > Math.max(1,chats.length)) {
+      const effect=effects.pop(); for (const node of [effect.halo,effect.glow,...effect.stars]) node.remove();
+    }
+    while (effects.length < chats.length) {
+      const first=effects[0], copies=[first.halo,first.glow,...first.stars].map(node => {
+        const copy=node.cloneNode(true);copy.removeAttribute('style');copy.hidden=true;return copy;
+      });
+      effects.at(-1).stars[1].after(...copies);
+      effects.push({halo:copies[0],glow:copies[1],stars:copies.slice(2),surface:null,minimumHeight:null});
+    }
+    effects.forEach((effect,i) => {
+      const surface=chats[i]?.surface ?? null;
+      if (effect.surface !== surface) {effect.surface=surface;effect.minimumHeight=null;}
+      for (const node of [effect.glow,...effect.stars]) node.hidden=!surface;
+      if (!surface) effect.halo.hidden=true;
+    });
+    motionNodes=effects.flatMap(effect=>[effect.glow,...effect.stars]);
+  }
+  // One clock animates only each composer's theme-owned leaves. Never write
+  // inherited page variables or native styles on breathing frames.
+  const hasComposer = () => effects.some(effect=>effect.surface);
+  const breathing = createBreathing({requestFrame: fn => win.requestAnimationFrame(fn), cancelFrame: id => win.cancelAnimationFrame(id), visible: () => !disposed && view.host.isConnected && !doc.hidden && config.enabled && hasComposer(), reduced: () => reduced.matches, write: value => {
     const opacity = String(Math.round(value * 10000) / 10000);
     for (const node of motionNodes) setStyle(node, 'opacity', opacity);
   }});
@@ -129,7 +149,7 @@ export async function startTheme(win = window, options = {}) {
     rootStyles.add(key);
   }
   function syncMotion() {
-    const animated = config.enabled && !!native.nodes.surface && !doc.hidden && !reduced.matches && config.glowMode === 'breathe' && config.breathPeak > 0;
+    const animated = config.enabled && hasComposer() && !doc.hidden && !reduced.matches && config.glowMode === 'breathe' && config.breathPeak > 0;
     for (const node of motionNodes) setStyle(node, 'willChange', animated ? 'opacity' : 'auto');
     breathing.sync(config);
   }
@@ -213,6 +233,7 @@ export async function startTheme(win = window, options = {}) {
     const contentBounds = ready ? native.contentBounds() : null;
     if (ready) native.dockHomeComposer(contentBounds);
     const home = view.$('.aw-main'); home.hidden = !ready;
+    home.dataset.homeMode = ready ? n.homeMode ?? '' : '';
     view.setHomeVisible(ready);
     if (ready) {
       const bounds = contentBounds;
@@ -225,46 +246,46 @@ export async function startTheme(win = window, options = {}) {
       if (changedProject) refreshCatalog();
       view.$('.aw-project-chip').disabled = !n.projectTrigger;
     }
-    const surface = config.enabled ? n.surface : null;
-    const halo = view.$('.aw-live-halo');
-    for (const node of motionNodes) node.hidden = !surface;
-    if (surface) {
-      if (surface !== activeSurface) {if (activeSurface) resize.unobserve(activeSurface); activeSurface = surface; resize.observe(surface); minimumComposerHeight = null;}
+    const chats = config.enabled ? n.composers ?? [] : [];
+    bindComposerEffects(chats);
+    for (const [i,chat] of chats.entries()) {
+      const {surface,input}=chat, effect=effects[i], {glow,halo,stars}=effect;
       const rect = surface.getBoundingClientRect();
       const scale = surface.offsetWidth > 0 ? rect.width / surface.offsetWidth : 1;
       for (const key of ['left','top','width','height']) setStyle(glow, key, rect[key]+'px');
       setStyle(glow, 'borderRadius', 22*scale+'px');
       setStyle(glow, 'boxShadow', `0 0 ${15*scale}px rgb(255, 172, 218)`);
-      if (rect.height > 0) minimumComposerHeight = Math.min(minimumComposerHeight ?? Math.min(rect.height, 164), rect.height);
-      const expanded = n.input && (n.input.scrollHeight > 90 || rect.height > (minimumComposerHeight ?? rect.height) + 25);
+      if (rect.height > 0) effect.minimumHeight = Math.min(effect.minimumHeight ?? Math.min(rect.height, 164), rect.height);
+      const expanded = input.scrollHeight > 90 || rect.height > (effect.minimumHeight ?? rect.height) + 25;
       halo.hidden = !expanded || config.haloBlur === 0;
       const w = config.haloWidth;
       halo.style.cssText = `left:${rect.left-w}px;top:${rect.top-w}px;width:${rect.width+2*w}px;height:${rect.height+2*w}px;`;
       setStyle(stars[0], 'left', rect.left+27+'px'); setStyle(stars[0], 'top', rect.top-13+'px');
       setStyle(stars[1], 'left', rect.right-54+'px'); setStyle(stars[1], 'top', rect.bottom-15+'px');
-      if (ready) {
+      if (ready && surface === n.surface) {
         const b = home.getBoundingClientRect();
         const composerBounds = native.composerBounds() ?? rect;
         const toolbarHeight = Math.max(0, composerBounds.height - rect.height);
-        const reserved = Math.max(0, b.bottom - composerBounds.bottom) + (minimumComposerHeight ?? 145) + toolbarHeight + 24;
+        const reserved = Math.max(0, b.bottom - composerBounds.bottom) + (effect.minimumHeight ?? 145) + toolbarHeight + 24;
         view.root.style.setProperty('--aw-home-bottom', reserved+'px');
         const rows = b.width <= 700 ? 2 : 1;
         const listHeight = Math.max(48, Math.min(160, Math.floor((b.height - reserved - 202 - rows*55 - (rows-1)*10) / rows * .72)));
         view.root.style.setProperty('--aw-thread-height', listHeight+'px');
         view.clipHomeCards(composerBounds);
       }
-    } else {halo.hidden = true; if (activeSurface) resize.unobserve(activeSurface); activeSurface = null; minimumComposerHeight = null;}
-    if (!ready || !surface) view.clipHomeCards(null);
+    }
+    if (!ready || !n.surface) view.clipHomeCards(null);
     if (config.enabled) native.syncProjectPicker();
     syncMotion();
-    if (n.main && observedMain !== n.main) {if (observedMain) resize.unobserve(observedMain); observedMain = n.main; resize.observe(n.main);}
+    for (const previous of observedPanes) if (!config.enabled || ![n.main,n.contentRoot].includes(previous)) {resize.unobserve(previous);observedPanes.delete(previous);}
+    if (config.enabled) for (const pane of [n.main,n.contentRoot]) if (pane && !observedPanes.has(pane)) {resize.observe(pane);observedPanes.add(pane);}
   }
-  let observedMain = null;
+  const observedPanes = new Set();
   const resize = new win.ResizeObserver(scheduleLayout);
   const observer = new win.MutationObserver(records => {
     if (records.some(r => !(r.target === background || background.contains(r.target) || r.target === view.host))) scheduleLayout();
   });
-  observer.observe(doc.body, {childList:true, subtree:true, attributes:true, attributeFilter:['hidden','inert','aria-hidden','aria-expanded','aria-controls','class','style','data-composer-placement','data-sidebar-collapsed']});
+  observer.observe(doc.body, {childList:true, subtree:true, attributes:true, attributeFilter:['hidden','inert','aria-hidden','aria-pressed','aria-expanded','aria-controls','class','style','data-composer-placement','data-sidebar-collapsed']});
   async function refreshCatalog() {
     clearTimeout(catalogTimer);
     if (disposed || doc.hidden) return;
